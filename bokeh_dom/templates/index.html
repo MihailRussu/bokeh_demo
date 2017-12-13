@@ -1,0 +1,93 @@
+{#
+Renders Bokeh models into a basic .html file.
+
+:param title: value for ``<title>`` tags
+:type title: str
+
+:param plot_resources: typically the output of RESOURCES
+:type plot_resources: str
+
+:param plot_script: typically the output of PLOT_SCRIPT
+:type plot_script: str
+
+:param plot_div: typically the output of PLOT_DIV
+:type plot_div: str
+
+Users can customize the file output by providing their own Jinja2 template
+that accepts these same parameters.
+
+#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ title|e if title else "Bokeh Plot" }}</title>
+    {{ bokeh_css }}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    {{ bokeh_js }}
+    <style>
+        html {
+            width: 100%;
+        }
+
+        body {
+            width: 90%;
+            height: 100%;
+            margin: auto;
+        }
+
+    </style>
+</head>
+<body>
+
+
+{{ plot_div|indent(8) }}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" id="toggle_demo">
+    Display settings
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+     aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Sliders controls</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body bk-root">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{ plot_script|indent(8) }}
+
+<script>
+    $(function () {
+        $(".bk-root").on('DOMSubtreeModified', function (e) {
+            var controls = $('.plot_demo .demo_controls').detach();
+            if (controls.length > 0) {
+                $('.modal-body').html(controls);
+                $(".bk-root").off('DOMSubtreeModified');
+            }
+        });
+    });
+</script>
+</body>
+</html>
+
