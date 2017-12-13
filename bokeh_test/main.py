@@ -11,7 +11,6 @@ from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import Slider, TextInput
 from bokeh.palettes import RdYlBu3
 from bokeh.plotting import figure
-from bokeh.models.callbacks import CustomJS
 
 # create a plot and style its properties
 p1 = figure(x_range=(0, 100), y_range=(0, 100), toolbar_location=None)
@@ -128,11 +127,6 @@ shown = False
 
 def callback3():
     global shown
-    logging.warn('Roots: ')
-    logging.warn(doc._roots)
-
-    logging.warn('Shown:')
-    logging.warn(shown)
 
     if not shown:
         doc.add_root(secret_row_1)
@@ -193,28 +187,6 @@ for w2 in [offset2, amplitude2, phase2, freq2]:
 
 # Set up layouts and add to document
 inputs2 = widgetbox(text2, offset2, amplitude2, phase2, freq2)
-
-cb = CustomJS(args=dict(xr=inputs2), code="""
-
-// JavaScript code goes here
-
-console.log(xr);
-console.log(cb_obj);
-
-document.getElementById(id).style.visibility = "hidden";
-
-alert('yay');
-
-var a = 10;
-
-// the model that triggered the callback is cb_obj:
-var b = cb_obj.value;
-
-// models passed as args are automagically available
-xr.start = a;
-xr.end = b;
-
-""")
 
 # add a button widget and configure with the call back
 button = Button(label="Press Me")
